@@ -1,0 +1,16 @@
+{
+  "name": "minecraft-region",
+  "version": "0.0.2",
+  "description": "parses chunks out of a minecraft region file",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Jason Livesay <ithkuil@gmail.com>, Max Ogden <max@maxogden.com>",
+  "license": "BSD",
+  "dependencies": {
+    "minecraft-chunk": "0.0.1",
+    "jDataView": "~1.1.0",
+    "minecraft-nbt": "0.0.2"
+  }
+}
