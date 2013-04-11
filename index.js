@@ -1,7 +1,8 @@
 var dataview = require('jDataView');
 var NBTReader = require('minecraft-nbt').NBTReader;
 var chunk = require('minecraft-chunk');
-var Zlib = require('./zlib-inflate.min').Zlib
+if (process.browser) var Zlib = require('./zlib-inflate.min').Zlib
+else var Zlib = require('./zlibjs-node')
 
 var CHUNK_HEADER_SIZE, SECTOR_BYTES, SECTOR_INTS, emptySector, emptySectorBuffer, sizeDelta,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -63,7 +64,8 @@ Region.prototype.getChunk = function(x, z) {
     length = this.dataView.getInt32();
     version = this.dataView.getUint8();
     data = new Uint8Array(this.buffer, this.dataView.tell(), length);
-    retvalbytes = new Zlib.Inflate(data).decompress();
+    if (process.browser) retvalbytes = new Zlib.Inflate(data).decompress();
+    else retvalbytes = Zlib.inflateSync(data)
     nbtReader = new NBTReader(retvalbytes);
     retval = nbtReader.read();
     return retval;
@@ -76,7 +78,6 @@ Region.prototype.outOfBounds = function(x, z) {
 
 Region.prototype.getOffset = function(x, z) {
   var bytes, locationOffset, offset, sectors;
-
   locationOffset = 4 * (x + z * 32);
   bytes = new Uint8Array(this.buffer, locationOffset, 4);
   sectors = bytes[3];
