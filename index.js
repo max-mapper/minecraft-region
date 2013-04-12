@@ -19,6 +19,8 @@ emptySector = new Uint8Array(emptySectorBuffer);
 
 sizeDelta = 0;
 
+function mod (num, n) { return ( num < 0 ? (num % n) + n : num % n) }
+
 function Region(buffer, x, z) {
   var i, nSectors, offset, sectorNum;
 
@@ -78,7 +80,9 @@ Region.prototype.outOfBounds = function(x, z) {
 
 Region.prototype.getOffset = function(x, z) {
   var bytes, locationOffset, offset, sectors;
-  locationOffset = 4 * (x + z * 32);
+  x = Math.abs(mod(x, 32))
+  z = Math.abs(mod(z, 32))  
+  locationOffset = 4 * (x + z * 32)
   bytes = new Uint8Array(this.buffer, locationOffset, 4);
   sectors = bytes[3];
   offset = bytes[0] << 16 | bytes[1] << 8 | bytes[2];
