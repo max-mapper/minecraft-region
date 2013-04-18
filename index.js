@@ -100,6 +100,6 @@ Region.prototype.hasChunk = function(x, z) {
   return offset !== 0;
 };
 
-module.exports = function(data) {
-  return new Region(data)
+module.exports = function(data, x, z) {
+  return new Region(data, x, z)
 }
