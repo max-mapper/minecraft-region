@@ -27,9 +27,8 @@ function Region(buffer, x, z) {
   this.buffer = buffer;
   this.x = x;
   this.z = z;
-  this.hasChunk = __bind(this.hasChunk, this);
-  this.getOffset = __bind(this.getOffset, this);
   this.outOfBounds = __bind(this.outOfBounds, this);
+  this.getOffset = __bind(this.getOffset, this);
   this.getChunk = __bind(this.getChunk, this);
   this.dataView = new dataview(this.buffer);
   sizeDelta = 0;
@@ -55,27 +54,40 @@ function Region(buffer, x, z) {
 }
 
 Region.prototype.getChunk = function(x, z) {
-  var data, length, nbtReader, offset, retval, retvalbytes, version;
-
-  offset = this.getOffset(x, z);
+  var data, length, nbtReader, retval, retvalbytes, version;
+  if (this.outOfBounds(x, z)) return null
+  var offset = this.getOffset(x, z)
   if (offset === 0) {
-    console.log("Not able to show chunk at (" + x + ", " + z + ")");
-    return null;
+    return null
   } else {
-    this.dataView.seek(offset);
-    length = this.dataView.getInt32();
-    version = this.dataView.getUint8();
-    data = new Uint8Array(this.buffer, this.dataView.tell(), length);
-    if (process.browser) retvalbytes = new Zlib.Inflate(data).decompress();
+    this.dataView.seek(offset)
+    length = this.dataView.getInt32()
+    version = this.dataView.getUint8()
+    data = new Uint8Array(this.buffer, this.dataView.tell(), length)
+    if (process.browser) retvalbytes = new Zlib.Inflate(data).decompress()
     else retvalbytes = Zlib.inflateSync(data)
-    nbtReader = new NBTReader(retvalbytes);
-    retval = nbtReader.read();
-    return retval;
+    nbtReader = new NBTReader(retvalbytes)
+    retval = nbtReader.read()
+    return retval
   }
 };
 
 Region.prototype.outOfBounds = function(x, z) {
-  return x < 0 || x >= 32 || z < 0 || z >= 32;
+  var rx = +this.x
+  var rz = +this.z
+  var minx = rx * 32
+  var minz = rz * 32
+  var maxx = (rx + 1) * 32 - 1
+  var maxz = (rz + 1) * 32 - 1
+  if (maxx < minx) {
+    minx = (rx + 1) * 32 - 1
+    maxx = rx * 32
+  }
+  if (maxz < minz) {
+    minz = (rz + 1) * 32 - 1
+    maxz = rz * 32
+  }
+  return x < minx || x > maxx || z < minz || z > maxz
 };
 
 Region.prototype.getOffset = function(x, z) {
@@ -91,13 +103,6 @@ Region.prototype.getOffset = function(x, z) {
   } else {
     return offset * 4096;
   }
-};
-
-Region.prototype.hasChunk = function(x, z) {
-  var offset;
-
-  offset = this.getOffset(x, z);
-  return offset !== 0;
 };
 
 module.exports = function(data, x, z) {
