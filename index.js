@@ -19,7 +19,7 @@ emptySector = new Uint8Array(emptySectorBuffer);
 
 sizeDelta = 0;
 
-function mod (num, n) { return ( num < 0 ? (num % n) + n : num % n) }
+function mod (num, n) { return ((num % n) + n) % n }
 
 function Region(buffer, x, z) {
   var i, nSectors, offset, sectorNum;
