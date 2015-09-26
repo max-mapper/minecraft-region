@@ -1,5 +1,5 @@
 var mcRegion = require('./')
 var fs = require('fs')
-var mcaData = fs.readFileSync('r.0.0.mca')
+var mcaData = fs.readFileSync('r.0.1.mca')
 var region = mcRegion(mcaData)
 console.log('region loaded')
