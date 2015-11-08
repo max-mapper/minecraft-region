@@ -9,8 +9,8 @@
   "author": "Jason Livesay <ithkuil@gmail.com>, Max Ogden <max@maxogden.com>",
   "license": "BSD",
   "dependencies": {
-    "minecraft-chunk": "0.3.0",
-    "jDataView": "~1.1.0",
-    "minecraft-nbt": "0.0.2"
+    "minecraft-chunk": "0.3.1",
+    "jdataview": "^2.2.5",
+    "minecraft-nbt": "0.0.3"
   }
 }

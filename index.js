@@ -1,4 +1,4 @@
-var dataview = require('jDataView');
+var dataview = require('jdataview');
 var NBTReader = require('minecraft-nbt').NBTReader;
 var chunk = require('minecraft-chunk');
 if (process.browser) var Zlib = require('./zlib-inflate.min').Zlib
