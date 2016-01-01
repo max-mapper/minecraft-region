@@ -7,18 +7,19 @@ extracted from code originally written by @ithkuil for [mcchunkloader](https://g
 minecraft is property of Mojang AB
 
 ```javascript
-var mcRegion = require('minecraft-region')
-var region = mcRegion(binaryRegionData) // from a .mca file
-var chunkX = 0
-var chunkY = 0
+var mcRegion = require('minecraft-region');
+var fs = require('fs');
+var mcData = fs.readFileSync('r.0.1.mca', 'binary');
+var region = mcRegion(mcData);
+var chunkX = 0;
+var chunkY = 0;
 if (region.hasChunk(chunkX, chunkY))
-  var chunk = region.getChunk(chunkX, chunkY)
-
-now use the chunk with minecraft-region to get voxel data
+  var chunk = region.getChunk(chunkX, chunkY);
 ```
 
-this module works with [minecraft-chunk](http://github.com/maxogden/minecraft-chunk) and is used by [minecraft-mca](http://github.com/maxogden/minecraft-mca)
+now use the chunk with minecraft-region to get voxel data
 
+this module works with [minecraft-chunk](http://github.com/maxogden/minecraft-chunk) and is used by [minecraft-mca](http://github.com/maxogden/minecraft-mca)
 
 designed for use with [browserify](http://browserify.org)
 
