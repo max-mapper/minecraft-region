@@ -40,7 +40,6 @@ function Region(buffer, x, z) {
   this.sectorFree[0] = false;
   this.sectorFree[1] = false;
   this.dataView.seek(0);
-  this.offsets = new Int32Array(this.buffer, 0, SECTOR_INTS);
   
   for (var i = 0; i <= SECTOR_INTS; ++i) {
     offset = this.dataView.getInt32();
@@ -54,7 +53,7 @@ function Region(buffer, x, z) {
 }
 
 Region.prototype.getChunk = function(x, z) {
-  var data, length, nbtReader, retval, retvalbytes, version;
+  var data, length, nbtReader, retval, retvalbytes, version, i;
   if (this.outOfBounds(x, z)) return null
   var offset = this.getOffset(x, z)
   if (offset === 0) {
@@ -63,7 +62,10 @@ Region.prototype.getChunk = function(x, z) {
     this.dataView.seek(offset)
     length = this.dataView.getInt32()
     version = this.dataView.getUint8()
-    data = new Uint8Array(this.buffer, this.dataView.tell(), length)
+    data = new Uint8Array(length)
+    for (i = 0; i < length; i += 1) {
+        data[i] = this.dataView.getUint8();
+    }
     if (process.browser) retvalbytes = new Zlib.Inflate(data).decompress()
     else retvalbytes = Zlib.inflateSync(data)
     nbtReader = new NBTReader(retvalbytes)
@@ -95,14 +97,12 @@ Region.prototype.getOffset = function(x, z) {
   x = Math.abs(mod(x, 32))
   z = Math.abs(mod(z, 32))  
   locationOffset = 4 * (x + z * 32)
-  bytes = new Uint8Array(this.buffer, locationOffset, 4);
-  sectors = bytes[3];
-  offset = bytes[0] << 16 | bytes[1] << 8 | bytes[2];
-  if (offset === 0) {
-    return 0;
-  } else {
-    return offset * 4096;
-  }
+  this.dataView.seek(locationOffset);
+  offset = this.dataView.getUint8() << 16;
+  offset += this.dataView.getUint8() << 8;
+  offset += this.dataView.getUint8();
+  offset *= 4096;
+  return offset;
 };
 
 module.exports = function(data, x, z) {
